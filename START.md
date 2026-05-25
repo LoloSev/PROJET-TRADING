@@ -3,25 +3,41 @@
 
 ---
 
+## 📌 QUICK NOTE
+
+**This doc is for V3.1** (complete cascade with BUY/SELL signals).
+
+If you want **individual component testing**, see **CLAUDE.md** for:
+- **LOLO_SWING_M15.pine** → M15 swing detection
+- **LOLO_FVG_M1.pine** → M1 FVG detection  
+- **LOLO_CRT_H1.pine** → H1 CRT detection
+- **LOLO_STRAT_HUGO_V1.pine** → Combined (H1 CRT + M15 SWING + M1 FVG on M1)
+
+---
+
 ## OBJECTIF PRIORITAIRE V3.1
 
 ```yaml
 primary_goal:
-  - Obtenir un signal BUY/SELL quand les conditions structurelles sont réunies.
-  - Valider la cascade H1 -> M15 -> M1.
+  - Obtenir un signal BUY/SELL quand les conditions structurelles COMPLÈTES sont réunies.
+  - Valider la cascade H1 -> M15 -> M1 AVEC retracement.
   - Valider l'affichage visuel et les alertes TradingView.
 
+validation_signal_REQUIRED:
+  BUY: H1 CRT BULL + M15 SWING LOW + M1 FVG BULL + PRICE RETRACES INTO FVG
+  SELL: H1 CRT BEAR + M15 SWING HIGH + M1 FVG BEAR + PRICE RETRACES INTO FVG
+
+critical_rule:
+  NO_RETRACEMENT: "Pas de retracement = Pas de trade, peu importe les autres conditions"
+  reason: "Price must validate FVG as structural level"
+  reference: "See FVG_AND_RETRACEMENT.md"
+
 explicitly_excluded_for_now:
-  - Retracement dans FVG.
   - Entrée sur OB / Breaker / PD Array.
   - Premium / Discount.
   - SL / TP.
   - Breakeven.
   - Add-in / pyramidage.
-
-validation_signal:
-  BUY: H1 CRT BULL + M15 SWING LOW + M1 FVG BULL
-  SELL: H1 CRT BEAR + M15 SWING HIGH + M1 FVG BEAR
 ```
 
 > Cette version ne valide pas encore une prise de trade complète. Elle sert d'abord à vérifier que le moteur produit un signal lorsque les conditions de base sont alignées.
@@ -104,13 +120,15 @@ alerts:
 ```text
 loop on M1 candle close:
 
-  // H1 CONTEXT
+  // H1 CONTEXT (CRT with liquidity raid validation)
   h1_bullish_crt = previous H1 candle bearish
                    AND current H1 candle bullish
+                   AND current H1 LOW breaks BELOW previous low (liquidity raid)
                    AND current H1 close inside previous H1 range
 
   h1_bearish_crt = previous H1 candle bullish
                    AND current H1 candle bearish
+                   AND current H1 HIGH breaks ABOVE previous high (liquidity raid)
                    AND current H1 close inside previous H1 range
 
   // M15 STRUCTURE
@@ -120,13 +138,16 @@ loop on M1 candle close:
   m15_swing_high = M15 three-candle swing high pattern
                    AND last candle bearish
 
-  // M1 FVG
+  // M1 FVG + RETRACEMENT
   fvg_bull = high[2] < low
   fvg_bear = low[2] > high
+  
+  retracement_bull = fvg_bull AND (close > high[2] AND close < low)
+  retracement_bear = fvg_bear AND (close > high AND close < low[2])
 
-  // VALIDATION SIGNALS ONLY
-  buy_signal = h1_bullish_crt AND m15_swing_low AND fvg_bull
-  sell_signal = h1_bearish_crt AND m15_swing_high AND fvg_bear
+  // VALIDATION SIGNALS ONLY (ALL 4 CONDITIONS REQUIRED)
+  buy_signal = h1_bullish_crt AND m15_swing_low AND retracement_bull
+  sell_signal = h1_bearish_crt AND m15_swing_high AND retracement_bear
 
   // OUTPUT
   IF buy_signal:
@@ -142,14 +163,17 @@ end loop
 
 ---
 
-## IMPORTANT - NON IMPLÉMENTÉ EN V3.1
+## IMPORTANT - IMPLÉMENTATION EN V3.1
 
 ```yaml
-not_in_scope:
+implemented:
   fvg_retracement:
-    status: excluded
-    reason: signal validation first
+    status: REQUIRED
+    reason: Price must validate FVG as structural level
+    reference: FVG_AND_RETRACEMENT.md
+    rule: "No retracement = No trade"
 
+not_in_scope:
   order_block_entry:
     status: excluded
     reason: trade-entry logic later

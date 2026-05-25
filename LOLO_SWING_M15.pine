@@ -1,0 +1,33 @@
+//@version=6
+indicator("LOLO SWING M15", overlay=true)
+
+show_swings = input.bool(true, "Show Swings?")
+
+var line[] lines = array.new<line>()
+var label[] labels = array.new<label>()
+
+is_swing_high = high[1] > high and high[1] > high[2]
+is_swing_low = low[1] < low and low[1] < low[2]
+
+if show_swings
+    if is_swing_high
+        line_high = line.new(bar_index - 1, high[1], bar_index + 20, high[1],
+                            color=color.green, width=2, style=line.style_solid)
+        label_high = label.new(bar_index, high[1], "SH",
+                              color=color.new(color.green, 80),
+                              textcolor=color.white,
+                              style=label.style_label_center,
+                              size=size.small)
+        array.push(lines, line_high)
+        array.push(labels, label_high)
+
+    if is_swing_low
+        line_low = line.new(bar_index - 1, low[1], bar_index + 20, low[1],
+                           color=color.red, width=2, style=line.style_solid)
+        label_low = label.new(bar_index, low[1], "SL",
+                             color=color.new(color.red, 80),
+                             textcolor=color.white,
+                             style=label.style_label_center,
+                             size=size.small)
+        array.push(lines, line_low)
+        array.push(labels, label_low)

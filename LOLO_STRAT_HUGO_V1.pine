@@ -1,0 +1,135 @@
+//@version=6
+indicator("LOLO STRAT HUGO V1", overlay=true)
+
+// ============================================================================
+// TOGGLES
+// ============================================================================
+show_fvg = input.bool(true, "Show M1 FVG?")
+show_crt = input.bool(true, "Show H1 CRT?")
+show_swing = input.bool(true, "Show M15 SWING?")
+
+// ============================================================================
+// COLORS
+// ============================================================================
+bullish_fvg_color = input.color(color.green, "Bullish FVG Color")
+bearish_fvg_color = input.color(color.red, "Bearish FVG Color")
+bullish_crt_color = input.color(color.green, "Bullish CRT Color")
+bearish_crt_color = input.color(color.red, "Bearish CRT Color")
+bullish_swing_color = input.color(color.blue, "Bullish Swing Color")
+bearish_swing_color = input.color(color.orange, "Bearish Swing Color")
+
+fvg_count = input.int(3, "Number of FVGs to show", minval=1, maxval=20)
+
+// ============================================================================
+// M1 FVG DETECTION (Native M1 data)
+// ============================================================================
+var box[] bull_fvg_boxes = array.new<box>()
+var box[] bear_fvg_boxes = array.new<box>()
+var line[] bull_fvg_mids = array.new<line>()
+var line[] bear_fvg_mids = array.new<line>()
+var label[] bull_fvg_labels = array.new<label>()
+var label[] bear_fvg_labels = array.new<label>()
+
+last_bar = last_bar_index + 50
+
+// Bullish FVG M1
+if show_fvg and high[2] < low
+    new_box = box.new(left=bar_index-2, top=low, right=last_bar, bottom=high[2],
+                      bgcolor=color.new(bullish_fvg_color, 85),
+                      border_color=bullish_fvg_color, border_width=1)
+    mid_price = (low + high[2]) / 2
+    new_midline = line.new(bar_index-2, mid_price, last_bar, mid_price,
+                          color=color.new(bullish_fvg_color, 50), width=1, style=line.style_dashed)
+    new_label = label.new(last_bar, mid_price, "M1 Bull FVG",
+                         color=color.new(bullish_fvg_color, 100), textcolor=color.white,
+                         style=label.style_label_left, size=size.tiny)
+    array.unshift(bull_fvg_boxes, new_box)
+    array.unshift(bull_fvg_mids, new_midline)
+    array.unshift(bull_fvg_labels, new_label)
+    if array.size(bull_fvg_boxes) > fvg_count
+        box.delete(array.pop(bull_fvg_boxes))
+        line.delete(array.pop(bull_fvg_mids))
+        label.delete(array.pop(bull_fvg_labels))
+
+// Bearish FVG M1
+if show_fvg and low[2] > high
+    new_box = box.new(left=bar_index-2, top=low[2], right=last_bar, bottom=high,
+                      bgcolor=color.new(bearish_fvg_color, 85),
+                      border_color=bearish_fvg_color, border_width=1)
+    mid_price = (low[2] + high) / 2
+    new_midline = line.new(bar_index-2, mid_price, last_bar, mid_price,
+                          color=color.new(bearish_fvg_color, 50), width=1, style=line.style_dashed)
+    new_label = label.new(last_bar, mid_price, "M1 Bear FVG",
+                         color=color.new(bearish_fvg_color, 100), textcolor=color.white,
+                         style=label.style_label_left, size=size.tiny)
+    array.unshift(bear_fvg_boxes, new_box)
+    array.unshift(bear_fvg_mids, new_midline)
+    array.unshift(bear_fvg_labels, new_label)
+    if array.size(bear_fvg_boxes) > fvg_count
+        box.delete(array.pop(bear_fvg_boxes))
+        line.delete(array.pop(bear_fvg_mids))
+        label.delete(array.pop(bear_fvg_labels))
+
+// ============================================================================
+// H1 CRT DETECTION (via request.security)
+// ============================================================================
+h1_close_1 = request.security(syminfo.tickerid, "60", close[1])
+h1_open_1 = request.security(syminfo.tickerid, "60", open[1])
+h1_close = request.security(syminfo.tickerid, "60", close)
+h1_open = request.security(syminfo.tickerid, "60", open)
+h1_high = request.security(syminfo.tickerid, "60", high)
+h1_low = request.security(syminfo.tickerid, "60", low)
+h1_high_1 = request.security(syminfo.tickerid, "60", high[1])
+h1_low_1 = request.security(syminfo.tickerid, "60", low[1])
+
+h1_bullish_crt = (h1_close_1 < h1_open_1)
+                 and (h1_close > h1_open)
+                 and (h1_low < h1_low_1)
+                 and (h1_close > h1_low_1)
+                 and (h1_close < h1_high_1)
+
+h1_bearish_crt = (h1_close_1 > h1_open_1)
+                 and (h1_close < h1_open)
+                 and (h1_high > h1_high_1)
+                 and (h1_close > h1_low_1)
+                 and (h1_close < h1_high_1)
+
+if h1_bullish_crt and show_crt
+    label.new(bar_index, low, "H1 CRT BULL",
+             color=color.new(bullish_crt_color, 0), textcolor=color.white,
+             style=label.style_label_up, size=size.small)
+
+if h1_bearish_crt and show_crt
+    label.new(bar_index, high, "H1 CRT BEAR",
+             color=color.new(bearish_crt_color, 0), textcolor=color.white,
+             style=label.style_label_down, size=size.small)
+
+// ============================================================================
+// M15 SWING DETECTION (via request.security)
+// ============================================================================
+m15_close_2 = request.security(syminfo.tickerid, "15", close[2])
+m15_open_2 = request.security(syminfo.tickerid, "15", open[2])
+m15_close_1 = request.security(syminfo.tickerid, "15", close[1])
+m15_open_1 = request.security(syminfo.tickerid, "15", open[1])
+m15_close = request.security(syminfo.tickerid, "15", close)
+m15_open = request.security(syminfo.tickerid, "15", open)
+m15_low_1 = request.security(syminfo.tickerid, "15", low[1])
+m15_low = request.security(syminfo.tickerid, "15", low)
+m15_low_2 = request.security(syminfo.tickerid, "15", low[2])
+m15_high_1 = request.security(syminfo.tickerid, "15", high[1])
+m15_high = request.security(syminfo.tickerid, "15", high)
+m15_high_2 = request.security(syminfo.tickerid, "15", high[2])
+
+m15_swing_low = (m15_low_1 < m15_low) and (m15_low_1 < m15_low_2) and (m15_close > m15_open)
+
+m15_swing_high = (m15_high_1 > m15_high) and (m15_high_1 > m15_high_2) and (m15_close < m15_open)
+
+if m15_swing_low and show_swing
+    label.new(bar_index, low, "M15 SWING LOW",
+             color=color.new(bullish_swing_color, 80), textcolor=color.white,
+             style=label.style_label_up, size=size.tiny)
+
+if m15_swing_high and show_swing
+    label.new(bar_index, high, "M15 SWING HIGH",
+             color=color.new(bearish_swing_color, 80), textcolor=color.white,
+             style=label.style_label_down, size=size.tiny)

@@ -1,0 +1,99 @@
+//@version=6
+indicator("LOLO FVG M1", overlay=true)
+
+show_fvg = input.bool(true, "Show FVGs?")
+fvg_count = input.int(3, "Number of FVGs to show", minval=1, maxval=20)
+
+bullish_fvg_color = input.color(color.green, "Bullish FVG Color")
+bearish_fvg_color = input.color(color.red, "Bearish FVG Color")
+
+var box[] bull_fvg_boxes = array.new<box>()
+var box[] bear_fvg_boxes = array.new<box>()
+var line[] bull_fvg_mids = array.new<line>()
+var line[] bear_fvg_mids = array.new<line>()
+var label[] bull_fvg_labels = array.new<label>()
+var label[] bear_fvg_labels = array.new<label>()
+
+last_bar = last_bar_index + 50
+
+// Bullish FVG: high[2] < low (gap between 2 bars ago high and current low)
+if show_fvg and high[2] < low
+    new_box = box.new(left=bar_index-2,
+                      top=low,
+                      right=last_bar,
+                      bottom=high[2],
+                      bgcolor=color.new(bullish_fvg_color, 85),
+                      border_color=bullish_fvg_color,
+                      border_width=1)
+
+    mid_price = (low + high[2]) / 2
+    new_midline = line.new(bar_index-2, mid_price, last_bar, mid_price,
+                          color=color.new(bullish_fvg_color, 50),
+                          width=1,
+                          style=line.style_dashed)
+
+    new_label = label.new(last_bar, mid_price, "Bull FVG",
+                         color=color.new(bullish_fvg_color, 100),
+                         textcolor=color.white,
+                         style=label.style_label_left,
+                         size=size.tiny)
+
+    array.unshift(bull_fvg_boxes, new_box)
+    array.unshift(bull_fvg_mids, new_midline)
+    array.unshift(bull_fvg_labels, new_label)
+
+    if array.size(bull_fvg_boxes) > fvg_count
+        box.delete(array.pop(bull_fvg_boxes))
+        line.delete(array.pop(bull_fvg_mids))
+        label.delete(array.pop(bull_fvg_labels))
+
+// Bearish FVG: low[2] > high (gap between 2 bars ago low and current high)
+if show_fvg and low[2] > high
+    new_box = box.new(left=bar_index-2,
+                      top=low[2],
+                      right=last_bar,
+                      bottom=high,
+                      bgcolor=color.new(bearish_fvg_color, 85),
+                      border_color=bearish_fvg_color,
+                      border_width=1)
+
+    mid_price = (low[2] + high) / 2
+    new_midline = line.new(bar_index-2, mid_price, last_bar, mid_price,
+                          color=color.new(bearish_fvg_color, 50),
+                          width=1,
+                          style=line.style_dashed)
+
+    new_label = label.new(last_bar, mid_price, "Bear FVG",
+                         color=color.new(bearish_fvg_color, 100),
+                         textcolor=color.white,
+                         style=label.style_label_left,
+                         size=size.tiny)
+
+    array.unshift(bear_fvg_boxes, new_box)
+    array.unshift(bear_fvg_mids, new_midline)
+    array.unshift(bear_fvg_labels, new_label)
+
+    if array.size(bear_fvg_boxes) > fvg_count
+        box.delete(array.pop(bear_fvg_boxes))
+        line.delete(array.pop(bear_fvg_mids))
+        label.delete(array.pop(bear_fvg_labels))
+
+// Cleanup if toggle is off
+if not show_fvg
+    if array.size(bull_fvg_boxes) > 0
+        for i = 0 to array.size(bull_fvg_boxes) - 1
+            box.delete(array.get(bull_fvg_boxes, i))
+            line.delete(array.get(bull_fvg_mids, i))
+            label.delete(array.get(bull_fvg_labels, i))
+        array.clear(bull_fvg_boxes)
+        array.clear(bull_fvg_mids)
+        array.clear(bull_fvg_labels)
+
+    if array.size(bear_fvg_boxes) > 0
+        for i = 0 to array.size(bear_fvg_boxes) - 1
+            box.delete(array.get(bear_fvg_boxes, i))
+            line.delete(array.get(bear_fvg_mids, i))
+            label.delete(array.get(bear_fvg_labels, i))
+        array.clear(bear_fvg_boxes)
+        array.clear(bear_fvg_mids)
+        array.clear(bear_fvg_labels)

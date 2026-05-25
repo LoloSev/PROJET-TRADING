@@ -1,0 +1,282 @@
+//@version=6
+indicator("ICT FVG & Swing Detector Basic by Trader Riaz", overlay=true)
+
+// Display toggles for Bullish FVGs
+show_bull_fvg = input.bool(true, "Show Bullish FVGs?")
+// Input settings for Bullish FVGs
+fvg_bull_count = input.int(1, "Number of Bullish FVGs to show", minval=1)
+// Color settings for Bullish FVGs
+bullish_fvg_color = input.color(color.green, "Bullish FVG Color")
+// Bullish FVG Extend Options
+bull_fvg_extendGroup = "Bullish FVG Extend Options"
+bull_fvg_extendOption = input.string("Default", "Bullish FVG Extend Option", options=["None", "Limited", "Default"], group=bull_fvg_extendGroup)
+bull_fvg_extendCandles = input.int(8, "Bullish FVG Extend Candles (Limited Only)", minval=1, maxval=100, step=1, group=bull_fvg_extendGroup)
+
+// Display toggles for Bearish FVGs
+show_bear_fvg = input.bool(true, "Show Bearish FVGs?")
+// Input settings for Bearish FVGs
+fvg_bear_count = input.int(1, "Number of Bearish FVGs to show", minval=1)
+// Color settings for Bearish FVGs
+bearish_fvg_color = input.color(color.red, "Bearish FVG Color")
+// Bearish FVG Extend Options
+bear_fvg_extendGroup = "Bearish FVG Extend Options"
+bear_fvg_extendOption = input.string("Default", "Bearish FVG Extend Option", options=["None", "Limited", "Default"], group=bear_fvg_extendGroup)
+bear_fvg_extendCandles = input.int(8, "Bearish FVG Extend Candles (Limited Only)", minval=1, maxval=100, step=1, group=bear_fvg_extendGroup)
+
+// Display toggles for Swing Highs
+show_swing_high = input.bool(true, "Show Swing Highs?")
+// Input settings for Swing Highs
+swing_high_count = input.int(2, "Number of Swing Highs to show", minval=1)
+// Color settings for Swing Highs
+swing_high_color = input.color(color.green, "Swing High Line & Label Color")
+// Swing High Extend Options
+swing_high_extendGroup = "Swing High Extend Options"
+swing_high_extendOption = input.string("Default", "Swing High Extend Option", options=["None", "Limited", "Default"], group=swing_high_extendGroup)
+swing_high_extendCandles = input.int(8, "Swing High Extend Candles (Limited Only)", minval=1, maxval=100, step=1, group=swing_high_extendGroup)
+
+// Display toggles for Swing Lows
+show_swing_low = input.bool(true, "Show Swing Lows?")
+// Input settings for Swing Lows
+swing_low_count = input.int(2, "Number of Swing Lows to show", minval=1)
+// Color settings for Swing Lows
+swing_low_color = input.color(color.red, "Swing Low Line & Label Color")
+// Swing Low Extend Options
+swing_low_extendGroup = "Swing Low Extend Options"
+swing_low_extendOption = input.string("Default", "Swing Low Extend Option", options=["None", "Limited", "Default"], group=swing_low_extendGroup)
+swing_low_extendCandles = input.int(8, "Swing Low Extend Candles (Limited Only)", minval=1, maxval=100, step=1, group=swing_low_extendGroup)
+
+// Target Settings
+showNextTarget = input.bool(true, "Show Next Target")
+nextTargetHighColor = input.color(color.red, "Next Target High Color")
+nextTargetLowColor = input.color(color.red, "Next Target Low Color")
+
+// === Time Calculation ===
+// Calculate one bar duration in milliseconds
+barDuration = time - time[1]
+// Define reasonable extension period (4 bars into future)
+extensionPeriod = barDuration * 4
+
+// Arrays to store values with timestamps
+var bull_fvg_data = array.new<box>(0)
+var bear_fvg_data = array.new<box>(0)
+var swing_high_data = array.new<line>(0)
+var swing_low_data = array.new<line>(0)
+var bull_fvg_labels = array.new<label>(0)
+var bear_fvg_labels = array.new<label>(0)
+var swing_high_labels = array.new<label>(0)
+var swing_low_labels = array.new<label>(0)
+var bull_fvg_midlines = array.new<line>(0)
+var bear_fvg_midlines = array.new<line>(0)
+var bull_fvg_tops = array.new<float>(0)
+var bull_fvg_bottoms = array.new<float>(0)
+var bear_fvg_tops = array.new<float>(0)
+var bear_fvg_bottoms = array.new<float>(0)
+
+// Get the last bar index
+last_bar = last_bar_index + 3
+
+// Function to determine right boundary based on extend option
+get_right_boundary(option, extend_candles, default_right) =>
+    if option == "None"
+        bar_index - 2
+    else if option == "Limited"
+        bar_index - 2 + extend_candles
+    else
+        default_right
+
+// Bullish FVG Detection
+if high[2] < low and show_bull_fvg
+    right_bar = get_right_boundary(bull_fvg_extendOption, bull_fvg_extendCandles, last_bar)
+    new_box = box.new(left=bar_index-2,
+                      top=low,
+                      right=right_bar,
+                      bottom=high[2],
+                      bgcolor=color.new(bullish_fvg_color, 90),
+                      border_color=bullish_fvg_color)
+    bull_mid = (low + high[2]) / 2
+    new_midline = line.new(bar_index-2, bull_mid, right_bar, bull_mid,
+                          color=color.new(bullish_fvg_color, 50),
+                          style=line.style_dashed)
+    new_label = label.new(right_bar-1, bull_mid, "Bullish FVG",
+                         color=color.new(bullish_fvg_color, 100),
+                         textcolor=bullish_fvg_color,
+                         style=label.style_none,
+                         textalign=text.align_right,
+                         size=size.small)
+    array.unshift(bull_fvg_data, new_box)
+    array.unshift(bull_fvg_midlines, new_midline)
+    array.unshift(bull_fvg_labels, new_label)
+    array.unshift(bull_fvg_tops, low)
+    array.unshift(bull_fvg_bottoms, high[2])
+    if array.size(bull_fvg_data) > fvg_bull_count
+        box.delete(array.pop(bull_fvg_data))
+        line.delete(array.pop(bull_fvg_midlines))
+        label.delete(array.pop(bull_fvg_labels))
+        array.pop(bull_fvg_tops)
+        array.pop(bull_fvg_bottoms)
+
+// Bearish FVG Detection
+if low[2] > high and show_bear_fvg
+    right_bar = get_right_boundary(bear_fvg_extendOption, bear_fvg_extendCandles, last_bar)
+    new_box = box.new(left=bar_index-2,
+                      top=low[2],
+                      right=right_bar,
+                      bottom=high,
+                      bgcolor=color.new(bearish_fvg_color, 90),
+                      border_color=bearish_fvg_color)
+    bear_mid = (low[2] + high) / 2
+    new_midline = line.new(bar_index-2, bear_mid, right_bar, bear_mid,
+                          color=color.new(bearish_fvg_color, 50),
+                          style=line.style_dashed)
+    new_label = label.new(right_bar-1, bear_mid, "Bearish FVG",
+                         color=color.new(bearish_fvg_color, 100),
+                         textcolor=bearish_fvg_color,
+                         style=label.style_none,
+                         textalign=text.align_right,
+                         size=size.small)
+    array.unshift(bear_fvg_data, new_box)
+    array.unshift(bear_fvg_midlines, new_midline)
+    array.unshift(bear_fvg_labels, new_label)
+    array.unshift(bear_fvg_tops, low[2])
+    array.unshift(bear_fvg_bottoms, high)
+    if array.size(bear_fvg_data) > fvg_bear_count
+        box.delete(array.pop(bear_fvg_data))
+        line.delete(array.pop(bear_fvg_midlines))
+        label.delete(array.pop(bear_fvg_labels))
+        array.pop(bear_fvg_tops)
+        array.pop(bear_fvg_bottoms)
+
+// Swing High Detection
+is_swing_high = high < high[1] and high[1] > high[2]
+if is_swing_high and show_swing_high
+    right_bar = get_right_boundary(swing_high_extendOption, swing_high_extendCandles, last_bar + 3)
+    new_line = line.new(bar_index - 1, high[1], right_bar, high[1],
+                       color=swing_high_color)
+    new_label = label.new(right_bar, high[1], "Swing High",
+                         color=color.new(color.white, 30),
+                         style=label.style_label_left,
+                         textcolor=swing_high_color,
+                         size=size.tiny)
+    array.unshift(swing_high_data, new_line)
+    array.unshift(swing_high_labels, new_label)
+    if array.size(swing_high_data) > swing_high_count
+        line.delete(array.pop(swing_high_data))
+        label.delete(array.pop(swing_high_labels))
+
+// Swing Low Detection
+is_swing_low = low > low[1] and low[1] < low[2]
+if is_swing_low and show_swing_low
+    right_bar = get_right_boundary(swing_low_extendOption, swing_low_extendCandles, last_bar + 3)
+    new_line = line.new(bar_index -1, low[1], right_bar, low[1],
+                       color=swing_low_color)
+    new_label = label.new(right_bar, low[1], "Swing Low",
+                         color=color.new(color.white, 30),
+                         style=label.style_label_left,
+                         textcolor=swing_low_color,
+                         size=size.tiny)
+    array.unshift(swing_low_data, new_line)
+    array.unshift(swing_low_labels, new_label)
+    if array.size(swing_low_data) > swing_low_count
+        line.delete(array.pop(swing_low_data))
+        label.delete(array.pop(swing_low_labels))
+
+// Clean up if toggles are turned off
+if not show_bull_fvg and array.size(bull_fvg_data) > 0
+    for i = 0 to array.size(bull_fvg_data) - 1
+        box.delete(array.get(bull_fvg_data, i))
+        line.delete(array.get(bull_fvg_midlines, i))
+        label.delete(array.get(bull_fvg_labels, i))
+    array.clear(bull_fvg_data)
+    array.clear(bull_fvg_midlines)
+    array.clear(bull_fvg_labels)
+    array.clear(bull_fvg_tops)
+    array.clear(bull_fvg_bottoms)
+
+if not show_bear_fvg and array.size(bear_fvg_data) > 0
+    for i = 0 to array.size(bear_fvg_data) - 1
+        box.delete(array.get(bear_fvg_data, i))
+        line.delete(array.get(bear_fvg_midlines, i))
+        label.delete(array.get(bear_fvg_labels, i))
+    array.clear(bear_fvg_data)
+    array.clear(bear_fvg_midlines)
+    array.clear(bear_fvg_labels)
+    array.clear(bear_fvg_tops)
+    array.clear(bear_fvg_bottoms)
+
+// === Swing High/Low Detection ===
+var float[] swingHighs = array.new<float>()
+var int[] swingHighTimes = array.new<int>()
+var float[] swingLows = array.new<float>()
+var int[] swingLowTimes = array.new<int>()
+
+var line[] swingHighLines = array.new<line>()
+var label[] swingHighLabels = array.new<label>()
+
+var line[] swingLowLines = array.new<line>()
+var label[] swingLowLabels = array.new<label>()
+
+isSwingHigh = high[1] > high[0] and high[1] > high[2]
+isSwingLow = low[1] < low[0] and low[1] < low[2]
+
+if isSwingHigh
+    array.unshift(swingHighs, high[1])
+    array.unshift(swingHighTimes, time[1])
+
+if isSwingLow
+    array.unshift(swingLows, low[1])
+    array.unshift(swingLowTimes, time[1])
+
+// === Next Target Detection ===
+var line currentTargetLine = na
+var label currentTargetLabel = na
+
+if showNextTarget
+    if not na(currentTargetLine)
+        line.delete(currentTargetLine)
+    if not na(currentTargetLabel)
+        label.delete(currentTargetLabel)
+
+    priceRising = close > open
+    priceFalling = close < open
+
+    // Use slightly longer extension for targets
+    targetExtension = barDuration * 8
+
+    if priceRising and array.size(swingHighs) > 0
+        for i = 0 to array.size(swingHighs) - 1
+            target = array.get(swingHighs, i)
+            targetTime = array.get(swingHighTimes, i)
+            if target > close
+                currentTargetLine := line.new(
+                     x1=targetTime, y1=target,
+                     x2=time + targetExtension, y2=target,
+                     color=nextTargetHighColor, width=2,
+                     style=line.style_dashed,
+                     xloc=xloc.bar_time)
+                currentTargetLabel := label.new(
+                     x=time + targetExtension, y=target,
+                     text="Potential Target", size=size.tiny,
+                     style=label.style_label_left,
+                     color=nextTargetHighColor,
+                     textcolor=color.white,
+                     xloc=xloc.bar_time)
+                break
+    else if priceFalling and array.size(swingLows) > 0
+        for i = 0 to array.size(swingLows) - 1
+            target = array.get(swingLows, i)
+            targetTime = array.get(swingLowTimes, i)
+            if target < close
+                currentTargetLine := line.new(
+                     x1=targetTime, y1=target,
+                     x2=time + targetExtension, y2=target,
+                     color=nextTargetLowColor, width=2,
+                     style=line.style_dashed,
+                     xloc=xloc.bar_time)
+                currentTargetLabel := label.new(
+                     x=time + targetExtension, y=target,
+                     text="Potential Target", size=size.tiny,
+                     style=label.style_label_left,
+                     color=nextTargetLowColor,
+                     textcolor=color.white,
+                     xloc=xloc.bar_time)
+                break

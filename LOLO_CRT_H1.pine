@@ -1,0 +1,67 @@
+//@version=6
+indicator("LOLO CRT H1", "LOLO CRT H1", overlay=true)
+
+// ============================================================================
+// LOLO CRT H1 - CANDLE RANGE THEORY
+// ============================================================================
+
+show_crt = input.bool(true, "Show CRT Labels?")
+
+bullish_crt_color = input.color(color.green, "Bullish CRT Color")
+bearish_crt_color = input.color(color.red, "Bearish CRT Color")
+
+// ============================================================================
+// CRT BULLISH DETECTION
+// ============================================================================
+// Requirements:
+// 1. Previous candle bearish (close[1] < open[1])
+// 2. Current candle bullish (close > open)
+// 3. Current LOW breaks BELOW previous low (liquidity raid) - low < low[1]
+// 4. Current close WITHIN previous range (low[1] < close < high[1])
+
+h1_bullish_crt = (close[1] < open[1])
+                 and (close > open)
+                 and (low < low[1])
+                 and (close > low[1])
+                 and (close < high[1])
+
+// ============================================================================
+// CRT BEARISH DETECTION
+// ============================================================================
+// Requirements:
+// 1. Previous candle bullish (close[1] > open[1])
+// 2. Current candle bearish (close < open)
+// 3. Current HIGH breaks ABOVE previous high (liquidity raid) - high > high[1]
+// 4. Current close WITHIN previous range (low[1] < close < high[1])
+
+h1_bearish_crt = (close[1] > open[1])
+                 and (close < open)
+                 and (high > high[1])
+                 and (close > low[1])
+                 and (close < high[1])
+
+// ============================================================================
+// DISPLAY CRT BULLISH
+// ============================================================================
+if h1_bullish_crt and show_crt
+    label.new(bar_index, low, "CRT BULL",
+             color=color.new(bullish_crt_color, 0),
+             textcolor=color.white,
+             style=label.style_label_up,
+             size=size.small)
+
+// ============================================================================
+// DISPLAY CRT BEARISH
+// ============================================================================
+if h1_bearish_crt and show_crt
+    label.new(bar_index, high, "CRT BEAR",
+             color=color.new(bearish_crt_color, 0),
+             textcolor=color.white,
+             style=label.style_label_down,
+             size=size.small)
+
+// ============================================================================
+// ALERTS
+// ============================================================================
+alertcondition(h1_bullish_crt, "Bullish CRT", "H1 Bullish CRT detected - Liquidity raid on LOW")
+alertcondition(h1_bearish_crt, "Bearish CRT", "H1 Bearish CRT detected - Liquidity raid on HIGH")

@@ -43,22 +43,24 @@ Automated trading indicator for M1 scalping using tri-level timeframe filtering:
 
 ---
 
-## Signal Logic
+## Signal Logic (V3.1 - Complete Validation)
 
 ```
 BUY Signal:
-  H1 Bullish CRT 
-  ∩ M15 Swing Low (same hour)
-  ∩ M1 FVG Bull created
-  ∩ Price retrace into FVG
+  ✓ H1 Bullish CRT 
+  ✓ M15 Swing Low (same hour)
+  ✓ M1 FVG Bull created (high[2] < low)
+  ✓ Price retraces into FVG (close > high[2] AND close < low)
   → DIAMOND LABEL "BUY" + ALERT
 
 SELL Signal:
-  H1 Bearish CRT
-  ∩ M15 Swing High (same hour)
-  ∩ M1 FVG Bear created
-  ∩ Price retrace into FVG
+  ✓ H1 Bearish CRT
+  ✓ M15 Swing High (same hour)
+  ✓ M1 FVG Bear created (low[2] > high)
+  ✓ Price retraces into FVG (close > high AND close < low[2])
   → DIAMOND LABEL "SELL" + ALERT
+
+CRITICAL RULE: No retracement = No trade (regardless of other conditions)
 ```
 
 ---

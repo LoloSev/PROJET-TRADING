@@ -1,5 +1,30 @@
-# START - SCALPING INDICATOR V3
-**Machine-First | IA Compatible | Executable Instructions**
+# START - SCALPING INDICATOR V3.1
+**Machine-First | IA Compatible | Signal Validation First**
+
+---
+
+## OBJECTIF PRIORITAIRE V3.1
+
+```yaml
+primary_goal:
+  - Obtenir un signal BUY/SELL quand les conditions structurelles sont réunies.
+  - Valider la cascade H1 -> M15 -> M1.
+  - Valider l'affichage visuel et les alertes TradingView.
+
+explicitly_excluded_for_now:
+  - Retracement dans FVG.
+  - Entrée sur OB / Breaker / PD Array.
+  - Premium / Discount.
+  - SL / TP.
+  - Breakeven.
+  - Add-in / pyramidage.
+
+validation_signal:
+  BUY: H1 CRT BULL + M15 SWING LOW + M1 FVG BULL
+  SELL: H1 CRT BEAR + M15 SWING HIGH + M1 FVG BEAR
+```
+
+> Cette version ne valide pas encore une prise de trade complète. Elle sert d'abord à vérifier que le moteur produit un signal lorsque les conditions de base sont alignées.
 
 ---
 
@@ -11,7 +36,7 @@ software:
   - Chrome/Chromium (optional, for manual editing)
 
 files_required:
-  - SCALPING_INDICATOR_V3.pine
+  - SCALPING_INDICATOR_V3_1_SIGNAL_VALIDATION.pine
   - FILTRAGE_H1_M1_CONDITIONS.md (reference)
 
 platform:
@@ -21,24 +46,24 @@ platform:
 
 ---
 
-## SETUP (One-Time)
+## SETUP
 
-```
+```text
 1. Launch TradingView Desktop with debug port:
-   Command: "C:\Program Files\WindowsApps\TradingView.Desktop_3.1.0.7818_x64__n534cwy3pjxzj\TradingView.exe" --remote-debugging-port=9222
+   "C:\\Program Files\\WindowsApps\\TradingView.Desktop_3.1.0.7818_x64__n534cwy3pjxzj\\TradingView.exe" --remote-debugging-port=9222
 
-2. Open chart on desired pair (e.g., EURUSD)
-   Set timeframe to: M1 (required for indicator display)
+2. Open chart on desired instrument.
+   Required timeframe for signal validation: M1.
 
-3. Open Pine Script Editor (Ctrl+Shift+E or menu)
+3. Open Pine Script Editor.
 
-4. Copy SCALPING_INDICATOR_V3.pine content
-   Paste into editor
-   Click "Save and Compile"
-   Verify: ✅ Compiled clean — 0 errors
+4. Copy SCALPING_INDICATOR_V3_1_SIGNAL_VALIDATION.pine content.
+   Paste into editor.
+   Save and compile.
+   Expected result: 0 errors.
 
-5. Apply indicator to M1 chart
-   Verify display on: H1 (left panel), M15 (right panel), M1 (main)
+5. Apply indicator to M1 chart.
+   Optional: also view H1 and M15 charts to verify debug labels.
 ```
 
 ---
@@ -47,160 +72,174 @@ platform:
 
 ```yaml
 indicator_settings:
-  version: 6 (Pine Script v6 required)
-  overlay: true (display ON candlesticks, not separate pane)
-  max_boxes_count: 200 (FVG storage)
-  
+  pine_version: 6
+  overlay: true
+  max_boxes_count: 200
+  max_labels_count: 500
+
+inputs:
+  show_debug: true
+  show_fvg: true
+  one_signal_per_bar: true
+
 timeframes_to_monitor:
-  - H1 (60min): CRT detection + display
-  - M15 (15min): SWING detection + cascade filter
-  - M1 (1min): FVG + SIGNAL display + alerts
+  H1: CRT context
+  M15: swing structure filter
+  M1: FVG detection + BUY/SELL signal
 
 display_elements:
-  H1: CRT labels (green BULL / red BEAR on 2nd candle)
-  M15: SWING labels (green LOW / red HIGH on 2nd candle) [CASCADED]
-  M1: FVG boxes (green/red) + BUY/SELL diamonds + H1/M15 status
+  H1: H1 CRT BULL / H1 CRT BEAR labels
+  M15: H1+M15 BULL / H1+M15 BEAR labels
+  M1: FVG boxes + BUY/SELL diamonds + H1/M15 debug labels
 
 alerts:
-  - BUY SIGNAL: ON (frequency: once_per_bar_close)
-  - SELL SIGNAL: ON (frequency: once_per_bar_close)
+  BUY SIGNAL: once_per_bar_close
+  SELL SIGNAL: once_per_bar_close
 ```
 
 ---
 
-## EXECUTION LOGIC
+## EXECUTION LOGIC V3.1
 
-```
-loop (every candle close on M1):
-  
-  // NIVEAU 1: H1 DATA
-  fetch h1_close, h1_open, h1_prev_close, h1_prev_open, h1_prev_high, h1_prev_low via request.security("60")
-  
-  // NIVEAU 2: M15 DATA
-  fetch m15_low[2], m15_low[1], m15_low[0], m15_high[2], m15_high[1], m15_high[0] via request.security("15")
-  
-  // NIVEAU 3: M1 DATA (NATIVE)
-  use close, open, high, low, high[2], low[2]
-  
-  // CALCULATE CONDITIONS
-  h1_crt_bull = (h1_prev_close < h1_prev_open) AND (h1_close > h1_open) AND (h1_close BETWEEN [h1_prev_low, h1_prev_high])
-  h1_crt_bear = (h1_prev_close > h1_prev_open) AND (h1_close < h1_open) AND (h1_close BETWEEN [h1_prev_low, h1_prev_high])
-  
-  m15_swing_low = (m15_close[2] < m15_open[2]) AND (m15_low[2] > m15_low[1] < m15_low[0]) AND (m15_close[0] > m15_open[0])
-  m15_swing_high = (m15_close[2] > m15_open[2]) AND (m15_high[2] < m15_high[1] > m15_high[0]) AND (m15_low[2] < m15_low[1] > m15_low[0]) AND (m15_close[0] < m15_open[0])
-  
+```text
+loop on M1 candle close:
+
+  // H1 CONTEXT
+  h1_bullish_crt = previous H1 candle bearish
+                   AND current H1 candle bullish
+                   AND current H1 close inside previous H1 range
+
+  h1_bearish_crt = previous H1 candle bullish
+                   AND current H1 candle bearish
+                   AND current H1 close inside previous H1 range
+
+  // M15 STRUCTURE
+  m15_swing_low = M15 three-candle swing low pattern
+                  AND last candle bullish
+
+  m15_swing_high = M15 three-candle swing high pattern
+                   AND last candle bearish
+
+  // M1 FVG
   fvg_bull = high[2] < low
   fvg_bear = low[2] > high
-  
-  price_in_fvg_bull = (close > high[2] AND close < low) AND fvg_bull
-  price_in_fvg_bear = (close > high AND close < low[2]) AND fvg_bear
-  
-  // CASCADE FILTER (CRITICAL)
-  h1_crt_bull_current = request.security(syminfo.tickerid, "60", h1_crt_bull)  // same hour H1?
-  h1_crt_bear_current = request.security(syminfo.tickerid, "60", h1_crt_bear)  // same hour H1?
-  
-  // FINAL SIGNALS
-  buy_signal = h1_crt_bull_current AND m15_swing_low AND fvg_bull AND price_in_fvg_bull
-  sell_signal = h1_crt_bear_current AND m15_swing_high AND fvg_bear AND price_in_fvg_bear
-  
+
+  // VALIDATION SIGNALS ONLY
+  buy_signal = h1_bullish_crt AND m15_swing_low AND fvg_bull
+  sell_signal = h1_bearish_crt AND m15_swing_high AND fvg_bear
+
   // OUTPUT
-  IF timeframe == "60" (H1):
-    IF h1_crt_bull OR h1_crt_bear:
-      display_label("CRT\n[BULL|BEAR]", color=[green|red], position=2nd_candle)
-  
-  IF timeframe == "15" (M15):
-    IF h1_crt_bull_current AND m15_swing_low:
-      display_label("SWING\nLOW", color=green, position=2nd_candle)
-    IF h1_crt_bear_current AND m15_swing_high:
-      display_label("SWING\nHIGH", color=red, position=2nd_candle)
-  
-  IF timeframe == "1" (M1):
-    IF fvg_bull: display_box(green, [high[2], low])
-    IF fvg_bear: display_box(red, [high, low[2]])
-    IF buy_signal: display_label("BUY", color=green, alert=true)
-    IF sell_signal: display_label("SELL", color=red, alert=true)
+  IF buy_signal:
+    display BUY diamond
+    trigger BUY alert
+
+  IF sell_signal:
+    display SELL diamond
+    trigger SELL alert
 
 end loop
 ```
 
 ---
 
-## EXPECTED OUTPUT (Live Charts)
+## IMPORTANT - NON IMPLÉMENTÉ EN V3.1
 
+```yaml
+not_in_scope:
+  fvg_retracement:
+    status: excluded
+    reason: signal validation first
+
+  order_block_entry:
+    status: excluded
+    reason: trade-entry logic later
+
+  premium_discount_filter:
+    status: excluded
+    reason: trade-entry logic later
+
+  risk_management:
+    status: excluded
+    reason: indicator currently validates signals only
 ```
-H1 Panel:
-  ✓ CRT labels appear on 2nd candle of pattern
-  ✓ Green BULL below, Red BEAR above
-  ✓ ~1-2 per hour (varies by volatility)
 
-M15 Panel:
-  ✓ SWING LOW labels ONLY if CRT BULL in same hour
-  ✓ SWING HIGH labels ONLY if CRT BEAR in same hour
-  ✓ NO orphaned swings without CRT
-  ✓ Displayed on 2nd candle of swing pattern
+---
 
-M1 Panel:
-  ✓ Green/Red FVG boxes (gaps)
-  ✓ Green diamond "BUY" when all 4 conditions met
-  ✓ Red diamond "SELL" when all 4 conditions met
-  ✓ Alert sound/notification on signal
-  ✓ Tiny "H1" + "M15" status labels on M1
+## EXPECTED OUTPUT
+
+```text
+H1 chart:
+  ✓ H1 CRT BULL / H1 CRT BEAR labels when CRT condition appears
+
+M15 chart:
+  ✓ H1+M15 BULL when H1 bullish CRT + M15 swing low align
+  ✓ H1+M15 BEAR when H1 bearish CRT + M15 swing high align
+
+M1 chart:
+  ✓ Green/red FVG boxes
+  ✓ BUY diamond when H1 CRT BULL + M15 SWING LOW + M1 FVG BULL
+  ✓ SELL diamond when H1 CRT BEAR + M15 SWING HIGH + M1 FVG BEAR
+  ✓ Alert on BUY/SELL signal
 ```
 
 ---
 
 ## VALIDATION CHECKLIST
 
-```
-□ TradingView running with --remote-debugging-port=9222
-□ Pine Script v6 indicator compiled (0 errors)
-□ Indicator applied to M1, M15, and H1 charts (or same chart with sub-windows)
-□ CRT labels visible on H1 chart
-□ SWING labels visible on M15 chart (ONLY with CRT)
-□ FVG boxes visible on M1 chart
-□ BUY/SELL diamonds appear on M1 (not constantly, only valid signals)
-□ Alerts trigger on valid signals
-□ No orphaned swings (all swings have CRT above them within same hour)
+```text
+□ Pine Script compiles with 0 errors.
+□ Indicator is applied on M1.
+□ FVG boxes appear on M1.
+□ H1 debug labels appear when CRT conditions exist.
+□ M15 debug labels appear when H1 + M15 conditions align.
+□ BUY/SELL diamonds appear when structural conditions align.
+□ Alerts trigger on BUY/SELL signal.
+□ No expectation yet of FVG retracement, OB entry, SL/TP or BE.
 ```
 
 ---
 
 ## TROUBLESHOOTING
 
-```
-problem: No CRT labels on H1
-  solution: Wait for pattern completion (Candle 1 BEAR + Candle 2 BULL inside range)
-  debug: Check h1_bullish_crt and h1_bearish_crt calculations
+```text
+problem: No BUY/SELL signal
+  check: Are the three validation blocks aligned?
+    - H1 CRT in the expected direction
+    - M15 swing in the same direction
+    - M1 FVG in the same direction
+  note: V3.1 does NOT wait for retracement into FVG.
 
-problem: SWING labels without CRT on M15
-  solution: request.security() may not capture same-hour CRT
-  debug: Verify h1_crt_bull_detected/h1_crt_bear_detected via request.security()
-  fix: Restart indicator or reload Pine Script
+problem: FVG boxes appear but no BUY/SELL signal
+  cause: H1 and/or M15 filter not aligned.
+  debug: Enable show_debug.
 
-problem: No signals despite visible FVG and swing
-  solution: Price must RETRACE INTO FVG (not just touch it)
-  debug: Check price_in_fvg_bull and price_in_fvg_bear conditions
-  fix: Wait for price to enter FVG zone
+problem: H1/M15 labels appear but no final signal
+  cause: No M1 FVG at the same validation moment.
+  debug: Check M1 chart with show_fvg enabled.
+
+problem: Too many debug labels
+  solution: Disable show_debug in indicator settings.
 
 problem: Alerts not firing
-  solution: alert() frequency set to once_per_bar_close
-  debug: Verify buy_signal and sell_signal trigger
-  fix: Check TradingView alert settings in system
+  check: TradingView alert configured on indicator.
+  check: alertcondition BUY SIGNAL / SELL SIGNAL available.
 ```
 
 ---
 
 ## OPERATION MODE
 
-```
-real_time_monitoring: M1 (1-minute candles)
-entry_signals: BUY/SELL diamonds on M1
-timeframe_cascade: H1 (filter) → M15 (validation) → M1 (execution)
-risk_management: [User responsibility - SL/TP not included in indicator]
+```yaml
+mode: signal_validation
+real_time_monitoring: M1
+cascade: H1 CRT -> M15 SWING -> M1 FVG -> BUY/SELL signal
+trade_execution: manual / not covered
+risk_management: not included
+next_phase: retracement FVG / OB / PD Array entry logic
 ```
 
 ---
 
 **Last Update:** 2026-05-25  
-**Status:** ✅ Production Ready  
-**Reference:** SCALPING_INDICATOR_V3.pine | FILTRAGE_H1_M1_CONDITIONS.md
+**Status:** V3.1 Signal Validation  
+**Reference:** SCALPING_INDICATOR_V3_1_SIGNAL_VALIDATION.pine | FILTRAGE_H1_M1_CONDITIONS.md

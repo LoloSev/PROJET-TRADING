@@ -1,0 +1,34 @@
+# IDE & Editor
+.claude/
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+*.tmp
+
+# TradingView
+*.backup
+.tv-cache/
+tv-debug-*.log
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.pytest_cache/
+
+# Logs
+*.log
+debug.log
+
+# Sensitive
+.env
+.env.local
+credentials.json
+secrets.yml

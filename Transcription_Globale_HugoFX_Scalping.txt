@@ -1,0 +1,120 @@
+TRANSCRIPTION GLOBALE ET STRUCTURÉE DE LA VIDÉO :
+"J'ai trouvé la MEILLEURE Stratégie de Scalping M1 pour 2026 !" — Hugo FX
+
+================================================================================
+INTRODUCTION ET PRÉSENTATION DU CONCEPT [00:00:00 - 00:00:27]
+================================================================================
+
+[00:00:00] Bonjour à tous, c'est Hugo, j'espère que vous allez bien ! Aujourd'hui, nouvelle vidéo où je vous partage une stratégie de scalping que j'ai récemment découverte et qui marche absolument bien. 
+
+[00:00:04] Ce sera une stratégie avec prise de position sur l'unité de temps 1 minute (M1). Les positions seront donc super rapides, vous ferez rapidement des profits et vous pourrez aller chercher de gros Risk:Reward (ratios risque/bénéfice).
+
+[00:00:17] Et surtout, le gros avantage : on n'a pas besoin de biais Daily (l'orientation de la tendance de fond de la journée), on n'a pas besoin de tracer des niveaux clés macro. On a juste besoin d'une seule chose : c'est un CRT en unité de temps 1 heure (H1). Je vais vous montrer pourquoi. Vous allez voir, c'est vraiment mécanique et ça marche absolument bien. Je l'utilise en ce moment-même, on ira voir plein d'exemples sur les graphiques, ça marche du tonnerre !
+
+================================================================================
+ÉTAPES THÉORIQUES — LE DÉCLENCHEUR : LE CRT H1 (CANDLE RANGE THEORY) [00:00:27 - 00:01:48]
+================================================================================
+
+[00:00:27] Alors, regardez sur du H1 ce qu'on va chercher : c'est la création d'un CRT. "CRT", c'est quoi ? C'est la Candle Range Theory (la théorie du range des bougies) pour ceux qui ne savent pas ce que c'est. Je ne vais pas tout réexpliquer de zéro ici dans cette vidéo, cela a été vu et revu sur ma chaîne YouTube. Tapez simplement "Candle Range Theory Hugo FX" et vous comprendrez tout de A à Z. 
+
+[00:00:48] Mais du coup, on va justement utiliser la simplicité de ce concept pour chercher notre scalping. Le but, ce sera donc qu'on crée une bougie initiale (haussière ou baissière) et que derrière, on crée un CRT. 
+
+[00:01:03] C'est-à-dire que la deuxième bougie doit tout simplement clôturer à l'intérieur du range de la première. Regardez ici, si je supprime tout ça, on a une seule et unique bougie de référence. On a un range délimité par cette bougie (son plus haut et son plus bas). Et là, sur cette nouvelle bougie, qu'est-ce qu'on fait ? On clôture à l'intérieur. 
+
+[00:01:15] Vous voyez ici, on ne clôture pas à l'extérieur, ce qui nous indiquerait qu'on pourrait encore avoir de la baisse. Non ! Là, ce qu'on vient faire, c'est clôturer à l'intérieur du range. On a ouvert ici, on est descendu jusque-là, et on clôture ici à l'intérieur. 
+
+[00:01:36] Donc là, les probabilités avec ce type de bougie, on le sait tous : c'est tout simplement qu'on s'expande à la hausse pour aller chercher l'autre côté du range. Hop, on continue ici tout simplement pour aller chercher la hausse. Mais nous, ce qu'on va faire, c'est agir sur les Low Time Frames (les petites unités de temps) pour tout simplement profiter ici de cette expansion. Et vous allez voir, on va rechercher quelque chose de très spécifique. 
+
+[00:01:48] En résumé, retenez juste que le but est d'avoir une première bougie, et que la deuxième clôture à l'intérieur du range (du haut et du bas) de cette première bougie pour qu'on aille donc chercher de la hausse. Ça, c'est la configuration sur le H1.
+
+================================================================================
+LE FILTRE INDISPENSABLE EN M15 : LA FORMATION DU SWING [00:01:48 - 00:08:42]
+================================================================================
+
+[00:02:15] Qu'est-ce qu'on va donc rechercher ensuite sur du M15 ? Eh bien regardez ici, c'est vraiment le point le plus important, c'est là où vous devez vous concentrer. 
+
+[00:02:22] Là, regardez ce que j'ai : ici c'est le H1, ici c'est le M15. J'utilise tout simplement mon indicateur qui me montre mes plus grosses timeframes en même temps. Regardez qu'est-ce qu'on fait ici sur le H1 : on fait une bougie baissière. Est-ce qu'on clôture à l'intérieur du range de cette première bougie ? Non, on clôture à l'extérieur, donc on descend encore plus. Ici, est-ce qu'on clôture à l'intérieur de cette bougie ? Non, encore une fois, grosse baisse. Et comme on le voit, on n'a que de la baisse. Est-ce que ça indique un retournement pour aller chercher de la hausse ? Non ! 
+
+[00:03:03] Alors que ici, regardez ce qu'on fait en H1 : on a une grosse bougie et là, qu'est-ce qu'on fait par rapport à celle-ci ? On clôtures à l'intérieur du range. Vous voyez, ce n'est pas comme les autres. Là où à chaque fois – je vais vous mettre un trait rouge – on clôturait à l'extérieur, ici on clôture à l'intérieur du range. La mèche peut être comme ça ou comme ça, on s'en fiche. L'important, c'est vraiment de clôturer à l'intérieur du range. Regardez, c'est ce qu'on fait vraiment ici en H1. Et donc ça, c'est la représentation en M15 du graphique H1 qu'on a ici.
+
+[00:03:42] Donc là, dès lors que la bougie H1 clôture là, on a le M15 qui est comme ça. Et bien vous, ce que vous allez faire à partir de maintenant dans votre tête, c'est : "OK, je suis prêt à acheter pour mon scalping, mais je dois maintenant attendre un autre pattern qui doit s'effectuer sur le marché." Si je n'ai pas ce pattern, je n'ai pas de trade ! 
+
+[00:04:06] Quel est ce pattern ? Tout simplement, en M15, vous allez attendre la création d'un swing low pour soutenir l'expansion. Pourquoi ? Parce que quel est à chaque fois le début d'une expansion ou d'une baisse ? Qu'est-ce qui lance le mouvement à chaque fois ? Là, on a un swing low, ce qui est logique : swing low = lancement d'expansion haussière. Swing high = retracement ou début de baisse. 
+
+[00:04:42] C'est obligatoire, un swing low ou un swing high sera toujours le début d'une expansion. C'est obligé. Ici, on a un swing low. Pourquoi on a un swing low ? Encore une fois, parce qu'on a un pattern de trois bougies (1, 2, 3). Pour être sûr que ce soit bien compris, un swing low c'est tout simplement un pattern de trois bougies où on vient former un "V" avec les mèches. Hop, hop, hop. Et donc, tout simplement derrière, ce qu'on aura ici, c'est de l'expansion. 
+
+[00:05:19] Le swing low, c'est toujours le départ d'une expansion haussière. Le swing high, c'est la même chose mais cette fois-ci on a un "A" avec les mèches, on a un chapeau, et donc ce sera toujours le départ d'une expansion baissière. Toujours, toujours ! 
+
+[00:05:36] Regardez, on va prendre un exemple encore une fois au hasard : GBP ou AUD/JPY, tiens. Voilà, ici qu'est-ce qu'on a sur le départ d'une expansion haussière ? Un swing low, hop, hop, et donc expansion haussière. Qu'est-ce qui crée de la baisse ici ? Hop, hop, un swing high. Et ça c'est pareil sur chacune des baisses et des hausses. 
+
+[00:06:34] Donc là, vraiment, concentrez-vous sur cette partie, c'est la plus importante et la plus difficile entre guillemets, pourtant c'est plutôt simple mais il faut juste comprendre. Donc là, regardez, on a notre pattern de CRT 1 heure qui s'est créé, on ne l'oublie pas. Dès lors que vous voyez ce pattern se créer, attendez bien la clôture de la bougie 1 heure pour valider le CRT. 
+
+[00:06:56] Ce que vous allez attendre maintenant, c'est la création d'un nouveau swing low supplémentaire après la création de cette bougie, comme j'ai mis ici. Pourquoi ? Parce que plein de fois dans mes tests, on a beau avoir un CRT 1 heure ici, plein de fois on peut aussi l'annuler et continuer à aller à la baisse. 
+
+[00:07:22] Ce que j'ai vu personnellement, c'est que si on attend la création d'un nouveau swing low supplémentaire en M15 une fois qu'il est formé, là les chances qu'on reparte à la hausse sont juste énormes ! Elles sont juste énormes. Donc là, encore une fois, ce que vous allez attendre, c'est ici la création d'un swing low M15 pour aller chercher de l'expansion haussière.
+
+================================================================================
+LA STRATÉGIE D'ENTRÉE EN M1 ET LES PD ARRAYS (PDRA) [00:08:42 - 00:16:53]
+================================================================================
+
+[00:07:44] Et donc, en M1, ce que vous allez faire, c'est prendre position dès lors que le swing low M15 est créé. Pourquoi ? Parce que le swing low M15 nous dit que derrière on va avoir de l'expansion, et n'oubliez pas que sur le H1 on a aussi notre CRT qui a été validé. On a un nouveau swing low qui se met sur le marché et qui nous confirme l'expansion. 
+
+[00:08:05] Nous, ce qu'on va faire, c'est tout simplement agir ici là-dedans, en M1, pour aller chercher de la hausse. Et donc en M1, ce qu'on fera toujours, c'est utiliser Premium/Discount. On attendra ici un retracement dans un PD Array (PDRA) et on a juste à se protéger et à prendre position. Le marché ira à la hausse parce qu'il nous a créé en M15 un swing low et que derrière, en H1, on a notre CRT. 
+
+[00:08:27] Ça peut paraître un peu complexe. J'aurais pu vous donner tout simplement le modèle où on prend juste le CRT H1 et on va chercher directement la prise de position, mais encore une fois, j'ai vu que le win rate (taux de réussite) seul n'était pas fameux. Rajouter ici la création d'un nouveau swing low M15 sécurise complètement le trade.
+
+[00:08:42] [Exemple concret sur le DAX] Ici, qu'est-ce qu'on vient créer par rapport à cette bougie ? Hop, hop, on vient créer une bougie de CRT valide en 1 heure. En plus, qu'est-ce qu'on peut voir ? C'est qu'on vient prendre ici la liquidité et qu'on clôture à l'intérieur. Ce sont toujours des confluences supplémentaires. Vous pourrez rajouter ça quand vous aurez de l'expérience et que vous comprendrez à fond cette vidéo. Le fait de balayer la liquidité et de clôturer à l'intérieur, c'est super, c'est un très bon signe de renversement. 
+
+[00:09:24] Et encore une fois, est-ce que vous avez besoin d'un biais Daily ? Est-ce que vous avez besoin de savoir si le GER40 (le DAX) va monter sur les prochaines semaines ? Non ! Vous êtes scalpeur. Vous, il vous faut un petit mouvement de là à là, et vous faites vos profits, merci au revoir. Donc là, vous voyez la clôture est faite. Vous devez attendre absolument cette clôture-là. Le CRT H1 est valide. Maintenant, je vais donc aller sur mon graphique M15.
+
+[00:10:04] En M15, qu'est-ce que j'ai ? J'ai mon swing initial. Ce que je vais donc attendre maintenant, c'est qu'on crée un nouveau swing ici en M15 qui nous dira : "OK, on crée un nouveau swing low ici, on n'invalide pas le bas, on fait un pattern de swing low qui nous dit qu'on va continuer cette hausse, qui nous protège, et qui annonce le début d'une expansion." 
+
+[00:10:30] Pourquoi je vous rajoute cette protection ? C'est très important selon mes tests. Regardez, parfois on peut avoir une hausse puis le CRT H1 n'est pas validé parce qu'on n'a pas créé de swing low ici, et du coup on subit une forte baisse et tout est invalidé. Je l'ai vu plein de fois. Le fait d'attendre un swing M15 nous prouve que le marché fait une structure de marché haussière (un bas plus haut que le précédent, un Higher Low), créant le départ de l'expansion.
+
+[00:11:04] Avançons ensemble doucement. Grosse bougie haussière, pas de souci. Et là, regardez ce qu'on fait (c'est pour ça qu'il est très important d'attendre le swing low) : est-ce qu'ici vous avez votre swing low, votre pattern de trois bougies ? Non, je ne l'ai toujours pas, donc j'attends. Parce que si je prends directement position en M1 à l'intérieur là, qu'est-ce qui va se passer ? Je vais me faire sweep (liquider) encore parce que je n'ai pas ma création de swing low. 
+
+[00:11:35] Par contre, là, est-ce que j'ai ma création de swing low ? Oui ! Regardez : 1, 2, 3. J'ai mon pattern qui est créé. Il me sert à quoi ce pattern ? Il me protège, il me dit que dans notre structure de marché, on crée un bas qui est plus haut que l'ancien. Le swing low est établi. Encore une fois, vous attendez bien la clôture de la bougie pour confirmer que c'est fait. Là, la nouvelle bougie apparaît, le swing low est confirmé. Vous allez maintenant zoomer en M1 pour aller chercher la prise de position.
+
+[00:12:48] Sur le M1, c'est la partie la plus simple. Vous avez juste à prendre position comme d'habitude dans vos PD Arrays en zone Discount. Donc là, je trace mon Premium/Discount (Fibo de 0 à 50% et 100%). Regardez, c'est pour ça que c'est super important sur les Low Time Frames. Vous voyez, on n'a pas utilisé Fibonacci avant, on n'en a pas besoin sur le CRT H1 ni sur le M15. Par contre, sur la prise de position en M1, toujours ! 
+
+[00:13:12] Regardez ici : trop tôt, on piège les acheteurs. Trop tôt, on piège les acheteurs. Ici, on touche enfin les 0.50. Qu'est-ce qu'on va chercher en M1 si je suis haussier ? Un retour en zone de Discount + une protection derrière un PD Array (PDRA) présent sur mon graphique. Si je suis baissier : retour en Premium + protection derrière un PD Array. 
+
+[00:13:48] Regardez, est-ce que j'ai un PD Array ici en Discount ? Bah ouais, bien sûr ! J'ai ici mon Fair Value Gap (FVG). Donc ce que je vais faire, c'est bien attendre ici un retour en Discount. Rappelez-vous que là, vous avez le CRT H1, vous avez le swing M15, vous avez toutes les probabilités de votre côté. Le marché ira dans votre sens plus de fois qu'à l'inverse. 
+
+[00:14:08] Là, ce qui peut tuer votre rentabilité, c'est malheureusement d'avoir un Stop Loss (SL) trop court ou de ne pas attendre ce qu'il faut attendre. Parfois, le marché partira sans toucher les 0.50, et ce n'est pas grave ! Je vous propose un modèle où il faut tout suivre à la lettre, et le marché n'est jamais parfait, c'est ça le trading. Donc s'il vous plaît, ne collez pas vos stops en M1 au millimètre juste pour aller chercher un ratio de 11R. Qu'est-ce qu'on fait intelligemment ? On prend notre PD Array et la zone Discount, et on se protège derrière. Ça me fait un stop de 4.8 pips, c'est rien, on prend son temps.
+
+================================================================================
+GESTION DU TRADE : BREAKEVEN ET PYRAMIDAGE (ADD-IN) [00:14:44 - 00:15:29]
+================================================================================
+
+[00:14:44] Donc là, énorme displacement (impulsion). Là, je me mets à Breakeven (BE), il n'y a aucun souci, je sécurise ma position et je peux donc aller chercher la hausse tranquillement. Ici, on a même un "Add-in" (un pyramidage) possible pour ceux qui tradent les Add-ins histoire de passer leurs challenges de Prop Firms beaucoup plus rapidement. Ça, c'est vraiment la recette magique. Je vous ferai peut-être un jour une vidéo sur les Add-ins mais c'est du contenu très avancé. 
+
+[00:15:04] Qu'est-ce qu'on fait ? On retrace ici au final, hop, hop, hop. On retrace dans notre PD Array en zone Discount comme on a fait juste avant, c'est pareil, et là je renvoie la nouvelle expansion jusqu'à l'atteinte de ma target. Et là, je quitte et c'est fini. 
+
+[00:15:19] Donc au final, là, vous avez vraiment un excellent trade. Ici, on se protège derrière la bougie qui a créé le Fair Value Gap. On sécurise à BE, on reprend position sur le deuxième Fair Value Gap ici, et voilà. Honnêtement, les challenges ce n'est pas dur à passer, il suffit d'un bon trade avec un bon Add-in. Là, je suis en M1, ça ne prend pas longtemps. Il est 8h, la position se termine à 9h : 1 heure de trade pour prendre tout ça !
+
+================================================================================
+DEUXIÈME EXEMPLE CONCRET (NZD/USD) ET SYNTHÈSE [00:16:53 - 00:25:50]
+================================================================================
+
+[00:16:53] On va aller voir un autre modèle ici, regardez sur NZD/USD : exactement la même chose. Est-ce que j'ai la création d'un CRT ici ? Non. Par contre, ici, j'ai bien la création d'un CRT H1 après une prise de liquidité. Retenez ça, c'est le petit cadeau que je vous fais pour ceux qui ont un peu plus de niveau. 
+
+[00:17:24] CRT H1 créé. Qu'est-ce que nous dit le fameux CRT en H1 normalement ? Sans zoomer, on est censé aller à la hausse. Mais nous, il nous faut beaucoup plus de confirmations car ici on a une imbalance (un FVG baissier), ça peut taper dedans et repartir à la baisse, ça ne suffit pas. Qu'est-ce qu'il nous faut ? La création d'un Swing Low M15. 
+
+[00:17:50] Maintenant, comme je vous l'ai dit, on va attendre ici la création d'un deuxième Swing Low M15 qui nous dirait qu'on inverse la structure de marché, ce qui vient en fait nous protéger ici avec la création de ce plus bas. Sans ce plus bas, le marché peut continuer à descendre. La création de ce plus bas effectif nous protège et nous dit que la structure s'est inversée. 
+
+[00:18:20] Encore une fois, attendez bien sur le H1 la clôture de cette bougie, ne vous pressez pas. Surtout n'achetez pas avant, ne soyez pas pressé, parce que la bougie peut avoir d'énormes rejets, finir noire et partir à la baisse. Une fois la clôture faite, c'est effectif. En M15, pareil, j'attends mon swing low. Si je n'ai pas de swing low, pas de trade. Le trading est déjà assez compliqué comme ça, si on n'attend pas un modèle précis, comment voulez-vous réussir ? Ce ne sera que par des coups de chance. Il faut des bases solides. 
+
+[00:19:15] Très important : si le marché fait son CRT H1 et que d'un coup il fait une énorme bougie sans créer de swing low, j'aurais loupé le trade et c'est pas grave ! Pas de trade = pas de SL = pas de perte, on garde le sourire.
+
+[00:19:46] On continue. Ici, grosse bougie baissière. Est-ce que j'ai mon swing low formé ? Toujours pas. On attend la clôture... Voilà, swing low formé ! Le pattern en bleu c'est le CRT, et en rouge c'est notre swing M15. Regardez, en M15 là on a déjà un BISI (FVG haussier), un Order Block (OB), notre CRT H1 et la création d'un swing low à l'intérieur. Là, c'est quasiment à 1000% sûr qu'on va partir à la hausse. 
+
+[00:20:48] Maintenant, je veux qu'on zoome ensemble en M1 pour faire notre scalping. Prise de position : toujours pareil, Premium/Discount. Regardez, c'est exactement le même pattern qu'avant. Le prix revient en zone Discount, c'est valide. Est-ce que j'ai un PD Array en Discount ? J'ai mon Breaker Block et j'ai mon Fair Value Gap (l'Unicorn Model). Si tu arrives à avoir une position ici, tu as un trade magnifique. Tu es en pur Discount, tu es en OTE (Optimal Trade Entry). Même si tu n'es pas parfait sur l'entrée au millimètre, l'important c'est de faire de l'argent, tu as la direction, tu as tout !
+
+[00:22:04] Si tu veux de la précision, tu as des magnifiques Risk:Reward. Tu es protégé derrière le breaker et le FVG, le marché ne va quasiment jamais invalider ça. Regardez, même chose qu'avant : dès que le prix s'élance, je me mets à Breakeven (BE). On a le même pattern. Retour dans le FVG en Discount, on peut accumuler un Add-in parce qu'on est à BE sur le premier et qu'on ne risque plus rien. On reprend un Long sur l'Order Block, on se protège derrière, et voilà ! Le marché explose grâce au même pattern. 
+
+[00:23:24] En H1 : CRT, clôture à l'intérieur du range, expansion. En M15 : le swing low se forme, change la structure et protège le trade. En M1 : retracement en Discount dans nos PD Arrays (FVG, Breaker, OB), et on va chercher le plus haut de la structure (la liquidité) puis on s'en va. Ne soyez pas trop gourmands, c'est ça le trading. 38 minutes de trade, du pur scalping avec des ratios magnifiques.
+
+[00:24:27] [Conclusion] J'espère que vous avez tout bien compris. Je refais un petit résumé : création de CRT pour retournement (ici on n'a fait que des exemples haussiers, mais pour les ventes c'est exactement l'inverse avec un CRT baissier et un Swing High M15). On attend notre zone Discount en M1 dans le dernier PD Array, et on envoie l'expansion. 
+
+[00:25:29] J'espère que cette stratégie de scalping vous a plu ! Testez-la sur les marchés, faites-moi vos retours dans les commentaires. Un maximum de likes s'il vous plaît, de commentaires, d'abonnements, et je vous dit à la prochaine ! C'était Hugo, ciao !

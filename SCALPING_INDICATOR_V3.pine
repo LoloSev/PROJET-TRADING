@@ -1,0 +1,169 @@
+//@version=6
+indicator("Scalping M1", "Scalp", overlay=true, max_boxes_count=200)
+
+// ==================== DATA FROM ALL TIMEFRAMES ====================
+h1_close = request.security(syminfo.tickerid, "60", close)
+h1_open = request.security(syminfo.tickerid, "60", open)
+h1_prev_close = request.security(syminfo.tickerid, "60", close[1])
+h1_prev_open = request.security(syminfo.tickerid, "60", open[1])
+h1_prev_high = request.security(syminfo.tickerid, "60", high[1])
+h1_prev_low = request.security(syminfo.tickerid, "60", low[1])
+
+m15_low_1 = request.security(syminfo.tickerid, "15", low[2])
+m15_low_2 = request.security(syminfo.tickerid, "15", low[1])
+m15_low_3 = request.security(syminfo.tickerid, "15", low)
+m15_high_1 = request.security(syminfo.tickerid, "15", high[2])
+m15_high_2 = request.security(syminfo.tickerid, "15", high[1])
+m15_high_3 = request.security(syminfo.tickerid, "15", high)
+
+m15_close_1 = request.security(syminfo.tickerid, "15", close[2])
+m15_open_1 = request.security(syminfo.tickerid, "15", open[2])
+m15_close_3 = request.security(syminfo.tickerid, "15", close)
+m15_open_3 = request.security(syminfo.tickerid, "15", open)
+
+// ==================== NIVEAU 1: H1 CRT ====================
+h1_range_low = math.min(h1_prev_high, h1_prev_low)
+h1_range_high = math.max(h1_prev_high, h1_prev_low)
+h1_crt_valid = h1_close > h1_range_low and h1_close < h1_range_high
+
+// CRT Direction - Candle 1 BEAR + Candle 2 BULL (bullish) or Candle 1 BULL + Candle 2 BEAR (bearish)
+h1_candle2_bull = h1_close > h1_open
+h1_candle2_bear = h1_close < h1_open
+h1_bullish_crt = (h1_prev_close < h1_prev_open) and h1_candle2_bull and h1_crt_valid
+h1_bearish_crt = (h1_prev_close > h1_prev_open) and h1_candle2_bear and h1_crt_valid
+
+// ==================== NIVEAU 2: M15 SWING ====================
+// Swing Low BULL: Bougie 1 BEARISH + Pattern V + Bougie 3 BULL
+m15_candle1_bear = m15_close_1 < m15_open_1
+m15_candle3_bull = m15_close_3 > m15_open_3
+m15_swing_low_valid = m15_candle1_bear and (m15_low_1 > m15_low_2 and m15_low_2 < m15_low_3) and m15_candle3_bull
+
+// Swing High BEAR: Bougie 1 BULL + Pattern A (highs) + Pattern lows inversé + Bougie 3 BEAR
+m15_candle1_bull = m15_close_1 > m15_open_1
+m15_candle3_bear = m15_close_3 < m15_open_3
+m15_swing_high_valid = m15_candle1_bull and (m15_high_1 < m15_high_2 and m15_high_2 > m15_high_3) and (m15_low_1 < m15_low_2 and m15_low_2 > m15_low_3) and m15_candle3_bear
+
+// ==================== NIVEAU 3: M1 FVG ====================
+// FVG Bull: high[2] < low (gap entre bougie 1 et bougie 3)
+fvg_bull_created = high[2] < low
+fvg_bull_top = low
+fvg_bull_bottom = high[2]
+
+// FVG Bear: low[2] > high (gap entre bougie 1 et bougie 3)
+fvg_bear_created = low[2] > high
+fvg_bear_top = low[2]
+fvg_bear_bottom = high
+
+// Retracement dans FVG
+price_in_fvg_bull = (close > fvg_bull_bottom and close < fvg_bull_top) and fvg_bull_created
+price_in_fvg_bear = (close > fvg_bear_bottom and close < fvg_bear_top) and fvg_bear_created
+
+// ==================== FINAL SIGNALS ====================
+// BUY: H1 Bullish CRT + M15 Swing Low + M1 FVG Bull créé + Prix dans FVG Bull
+buy_signal = h1_bullish_crt and m15_swing_low_valid and fvg_bull_created and price_in_fvg_bull
+
+// SELL: H1 Bearish CRT + M15 Swing High + M1 FVG Bear créé + Prix dans FVG Bear
+sell_signal = h1_bearish_crt and m15_swing_high_valid and fvg_bear_created and price_in_fvg_bear
+
+// ==================== ADAPTIVE DISPLAY ====================
+current_tf = timeframe.period
+
+// Track CRT H1 detection for M15 reporting
+var bool last_h1_crt_bull = false
+var bool last_h1_crt_bear = false
+
+// ON H1: Afficher CRT - BULL sous 2ème bougie, BEAR au-dessus 2ème bougie
+if current_tf == "60"
+    if h1_bullish_crt or h1_bearish_crt
+        crt_direction = h1_bullish_crt ? "BULL" : "BEAR"
+        crt_text = "CRT\n" + crt_direction
+        crt_color = h1_bullish_crt ? color.green : color.red
+        crt_yloc = h1_bullish_crt ? yloc.belowbar : yloc.abovebar
+        crt_price = h1_bullish_crt ? h1_close : h1_close
+        label.new(bar_index, crt_price, crt_text, color=color.new(crt_color, 0),
+                  textcolor=color.white, yloc=crt_yloc, size=size.small, style=label.style_label_center)
+
+// ON M15: Afficher SWING seulement si CRT H1 dans la MÊME heure
+else if current_tf == "15"
+    // CRT doit être dans le même candle H1 (même heure) - pas de persistance nécessaire
+    h1_crt_bull_detected = request.security(syminfo.tickerid, "60", h1_bullish_crt)
+    h1_crt_bear_detected = request.security(syminfo.tickerid, "60", h1_bearish_crt)
+
+    // SWING LOW affichée SEULEMENT si CRT BULL existe
+    if h1_crt_bull_detected and m15_swing_low_valid
+        swing_text = "SWING\nLOW"
+        swing_color = color.green
+        swing_price = m15_low_3
+        swing_yloc = yloc.belowbar
+        label.new(bar_index, swing_price, swing_text, color=color.new(swing_color, 0),
+                  textcolor=color.white, yloc=swing_yloc, size=size.small, style=label.style_label_center)
+
+    // SWING HIGH affichée SEULEMENT si CRT BEAR existe
+    if h1_crt_bear_detected and m15_swing_high_valid
+        swing_text = "SWING\nHIGH"
+        swing_color = color.red
+        swing_price = m15_high_3
+        swing_yloc = yloc.abovebar
+        label.new(bar_index, swing_price, swing_text, color=color.new(swing_color, 0),
+                  textcolor=color.white, yloc=swing_yloc, size=size.small, style=label.style_label_center)
+
+    // Afficher point juste quand le CRT H1 se forme (changement d'état)
+    if (h1_crt_bull_detected and not last_h1_crt_bull) or (h1_crt_bear_detected and not last_h1_crt_bear)
+        crt_color = h1_crt_bull_detected ? color.green : color.red
+        crt_yloc = h1_crt_bull_detected ? yloc.belowbar : yloc.abovebar
+        crt_price = h1_crt_bull_detected ? low : high
+        label.new(bar_index, crt_price, "", color=color.new(crt_color, 0),
+                  yloc=crt_yloc, size=size.small, style=label.style_circle)
+
+    last_h1_crt_bull := h1_crt_bull_detected
+    last_h1_crt_bear := h1_crt_bear_detected
+
+// ON M1: Afficher FVG + SIGNAUX + H1/M15 status
+else if current_tf == "1"
+    // Afficher TOUS les FVG Bull
+    if fvg_bull_created
+        box.new(bar_index - 2, fvg_bull_top, bar_index, fvg_bull_bottom,
+                border_color=color.new(color.green, 0), bgcolor=color.new(color.green, 85),
+                xloc=xloc.bar_index)
+
+    // Afficher TOUS les FVG Bear
+    if fvg_bear_created
+        box.new(bar_index - 2, fvg_bear_top, bar_index, fvg_bear_bottom,
+                border_color=color.new(color.red, 0), bgcolor=color.new(color.red, 85),
+                xloc=xloc.bar_index)
+
+    // H1 CRT indicator (tiny)
+    if h1_bullish_crt
+        label.new(bar_index, high, "H1", color=color.new(color.green, 0),
+                  textcolor=color.white, yloc=yloc.abovebar, size=size.small,
+                  style=label.style_label_center)
+
+    if h1_bearish_crt
+        label.new(bar_index, high, "H1", color=color.new(color.red, 0),
+                  textcolor=color.white, yloc=yloc.abovebar, size=size.small,
+                  style=label.style_label_center)
+
+    // M15 SWING indicator (tiny)
+    if m15_swing_low_valid
+        label.new(bar_index, low, "M15", color=color.new(color.green, 0),
+                  textcolor=color.white, yloc=yloc.belowbar, size=size.small,
+                  style=label.style_label_center)
+
+    if m15_swing_high_valid
+        label.new(bar_index, low, "M15", color=color.new(color.red, 0),
+                  textcolor=color.white, yloc=yloc.belowbar, size=size.small,
+                  style=label.style_label_center)
+
+    // Afficher BUY Signal
+    if buy_signal
+        label.new(bar_index, low, "BUY", color=color.new(color.green, 0),
+                  textcolor=color.white, yloc=yloc.belowbar, size=size.normal,
+                  style=label.style_diamond)
+        alert("BUY SIGNAL", alert.freq_once_per_bar_close)
+
+    // Afficher SELL Signal
+    if sell_signal
+        label.new(bar_index, high, "SELL", color=color.new(color.red, 0),
+                  textcolor=color.white, yloc=yloc.abovebar, size=size.normal,
+                  style=label.style_diamond)
+        alert("SELL SIGNAL", alert.freq_once_per_bar_close)
